@@ -11,6 +11,6 @@ RUN apt-get -y update
 RUN apt-get -y install git golang
 
 ADD main.go $GOSRC/hellogo/main.go
-RUN go install hellogo
+RUN go get hellogo
 
 CMD hellogo
