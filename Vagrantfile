@@ -38,6 +38,8 @@ Vagrant.configure("2") do |config|
 
       machine.vm.provision :file, :source => "#{CLOUD_CONFIG_PATH}", :destination => "/tmp/vagrantfile-user-data"
       machine.vm.provision :shell, :inline => "mv /tmp/vagrantfile-user-data /var/lib/coreos-vagrant/", :privileged => true
+
+      machine.ssh.forward_agent = true
     end
   end
 end

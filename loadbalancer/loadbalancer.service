@@ -1,0 +1,15 @@
+[Unit]
+Description=Hellogo Loadbalancer
+After=docker.service
+After=etcd.service
+
+[Service]
+EnvironmentFile=/etc/environment
+ExecStartPre=/usr/bin/docker pull bradgignac/coreos-intro-loadbalancer
+ExecStart=/usr/bin/docker run --name coreos-intro-loadbalancer -p 8181:8181 -p 8182:8182 bradgignac/coreos-intro-loadbalancer /opt/vulcan/vulcand -apiInterface="0.0.0.0" -interface="0.0.0.0" --etcd=http://10.1.42.1:4001
+ExecStartPost=/usr/bin/etcdctl set /vulcand/hosts/${COREOS_PUBLIC_IPV4}/locations/root/path "/"
+ExecStartPost=/usr/bin/etcdctl set /vulcand/hosts/${COREOS_PUBLIC_IPV4}/locations/root/upstream "hellogo"
+ExecStop=/usr/bin/docker stop coreos-intro-loadbalancer
+ExecStopPost=/usr/bin/etcdctl rm /vulcand/hosts/${COREOS_PUBLIC_IPV4}/locations/root/path
+ExecStopPost=/usr/bin/etcdctl rm /vulcand/hosts/${COREOS_PUBLIC_IPV4}/locations/root/upstream
+TimeoutSec=600
