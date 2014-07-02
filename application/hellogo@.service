@@ -1,0 +1,16 @@
+[Unit]
+Description=Hellogo Application Server
+After=docker.service
+After=etcd.service
+
+[Service]
+EnvironmentFile=/etc/environment
+ExecStartPre=/usr/bin/docker pull bradgignac/coreos-intro-application
+ExecStart=/usr/bin/docker run --name coreos-intro-app-%i -p %i:8000 --rm bradgignac/coreos-intro-application
+ExecStartPost=/usr/bin/etcdctl set /vulcand/upstreams/hellogo/endpoints/%n http://${COREOS_PUBLIC_IPV4}:%i
+ExecStop=/usr/bin/docker stop coreos-intro-app-%i
+ExecStopPost=/usr/bin/etcdctl rm /vulcand/upstreams/hellogo/endpoints/%n
+TimeoutSec=600
+
+[X-Fleet]
+X-Conflicts=hellogo@%i.service
