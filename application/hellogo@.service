@@ -13,4 +13,4 @@ ExecStopPost=/usr/bin/etcdctl rm /vulcand/upstreams/hellogo/endpoints/%n
 TimeoutSec=600
 
 [X-Fleet]
-X-Conflicts=hellogo@%i.service
+X-Conflicts=hellogo@*.service
